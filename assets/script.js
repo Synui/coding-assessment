@@ -1,5 +1,5 @@
 //questions for assessment
-const question = [
+const questions = [
     {
         question: "What is the correct syntax to close the <title> element?",
         choices: ["A: <?title>", "B: <!title>", "C: </title>", "D: <title>"],
@@ -62,7 +62,7 @@ var begin = document.getElementById("begin");
 var beginBtn = document.getElementById("beginBtn");
 
 var questionsTemplate = document.getElementById("questionsTemplate");
-var questions = document.getElementById("questions");
+var questionsUsed = document.getElementById("questions");
 var optionA = document.getElementById("btn0");
 var optionB = document.getElementById("btn1");
 var optionC = document.getElementById("btn2");
@@ -95,22 +95,157 @@ function startAssessment() {
     timeRemains.textContent = totalTime
     initialsInput.textContent = "";
 
-    begin.style.display = "none";
-    questionsTemplate.style.display = "block";
-    timer.style.display = "block";
-    timesUp.style.display = "none";
+    // begin.style.display = "none";
+    // questionsTemplate.style.display = "block";
+    // timer.style.display = "block";
+    // timesUp.style.display = "none";
 
     var startTimer = setInterval(function() {
         totalTime--;
         timeRemains.textContent = totalTime;
         if(totalTime <= 0) {
             clearInterval(startTimer);
-            if (questionInv < question.length -1) {
+            if (questionInv < questions.length -1) {
                 gameOver();
             }
         }
     },1000);
 
     showAssessment();
+};
+
+//questions and choices
+function showAssessment() {
+    nextQuestion();
+};
+
+function nextQuestion() {
+    questionsUsed.textContent = questions[questionInv].question;
+    optionA.textContent = questions[questionInv].choices[0];
+    optionB.textContent = questions[questionInv].choices[1];
+    optionC.textContent = questions[questionInv].choices[2];
+    optionD.textContent = questions[questionInv].choices[3];
+};
+
+//answers
+function answerVerify(answer) {
+    var linebreak = document.getElementById("linebreak");
+    // linebreak.style.display = "block";
+    // answerShow.style.display = "block";
+
+    if (questions[questionInv].answer === questions[questionInv].choices[answer]) {
+        //correct answers adds 1 point to score
+        correctAns++;
+        answerShow.textContent = "Correct!";
+    } else {
+        //incorrect answers subtracts 10 secs from timer
+        totalTime -= 10;
+        timeRemains.textContent = totalTime;
+        answerShow.textContent = "Incorrect! The correct answer is: " + questions[questionInv].answer;
+    }
+
+    questionInv++;
+    //same for other questions
+    if (questionInv < questions.length) {
+        nextQuestion();
+    } else {
+        //if no more questions, game over
+    gameOver();
+    }
+};
+
+function pickA() {
+    answerVerify(0);
+};
+
+function pickB() {
+    answerVerify(1);
+};
+
+function pickC() {
+    answerVerify(2);
+};
+
+function pickD() {
+    answerVerify(3);
+};
+
+//if timers reaches 0, game over
+function gameOver() {
+    // scores.style.display = "block";
+    // questionsTemplate.style.display = "none";
+    // assessment.style.display = "none";
+    // timer.style.display = "none";
+    // timesUp.style.display = "block";
+
+    //show final results
+    finalScore.textContent = correctAns;
+};
+
+//input initials while storing score in localStorage
+function saveHighScores(event) {
+    event.preventDefault();
+
+    //stops function if initials is left black
+    if (initialsInput.value === "") {
+        alert("Please enter your initials!");
+        return;
+    }
+
+    // begin.style.display = "none";
+    // timer.style.display = "none";
+    // timesUp.style.display = "none";
+    // scores.style.display = "none";
+    // highScoreSection.style.display = "block";
+
+    //stores scores in localStorage
+    var storedHighScores = localStorage.getItem("high scores");
+    var scoresList;
+
+    if (storedHighScores === null) {
+        scoresList = []
+    } else {
+        scoresList = JSON.parse(storedHighScores)
+    }
+
+    var playerScore = {
+        initials: initialsInput.value,
+        score: finalScore.textContent
+    };
+
+    console.log(playerScore);
+    scoresList.push(playerScore);
+
+    //making the objects into stringified arrays in localStorage
+    var scoresObjArray = JSON.stringify(scoresList);
+    window.localStorage.setItem("high scores", scoresObjArray);
+
+    displayHighScores();
+};
+
+//shows high scores
+var i = 0
+function displayHighScores() {
+    // begin.style.display = "none";
+    // timer.style.display = "none";
+    // questionsTemplate.style.display = "none";
+    // timesUp.style.display = "none";
+    // score.style.display = "none";
+    // highScoreSection.style.display = "block";
+
+    var storedHighScores = localStorage.getItem("high scores");
+
+    if (storedHighScores === null) {
+        return;
+    }
+    console.log(storedHighScores);
+
+    var savedHighScores = JSON.parse(storedHighScores);
+
+    for (; i < savedHighScores.length; i++) {
+        var multipleHighScores = document.createElement("p");
+        multipleHighScores.innerHTML = savedHighScores[i].initials + ": " + savedHighScores[i].score;
+        listOfHighScores.appendChild(multipleHighScores);
+    }
 };
 
