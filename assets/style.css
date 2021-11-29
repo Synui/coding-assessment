@@ -1,3 +1,11 @@
 .finalScore {
     display: flex;
 }
+
+a {
+    color: black;
+}
+
+a:hover {
+    color: rgb(255, 160, 176);
+}

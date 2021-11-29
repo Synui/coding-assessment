@@ -88,18 +88,18 @@ var questionInv = 0;
 var scoreResults;
 
 //making beginning screen only display intro
-timesUp.style.display = "none"
+timesUp.style.display = "none";
 questionsTemplate.style.display = "none";
 timer.style.display = "block";
-scores.style.display = "none"
-highScoreSection.style.display = "none"
+scores.style.display = "none";
+highScoreSection.style.display = "none";
 
 //timer starts countdown when assessment begins
-var totalTime = 181;
+var totalTime = 141;
 
 function startAssessment() {
     questionInv = 0;
-    totalTime = 180;
+    totalTime = 140;
     timeRemains.textContent = totalTime;
     initialsInput.textContent = "";
 
@@ -145,11 +145,13 @@ function answerVerify(answer) {
         //correct answers adds 1 point to score
         correctAns++;
         answerShow.textContent = "Correct!";
+        answerShow.style.color = "green";
     } else {
         //incorrect answers subtracts 10 secs from timer
         totalTime -= 10;
         timeRemains.textContent = totalTime;
         answerShow.textContent = "Incorrect! The correct answer is: " + questions[questionInv].answer;
+        answerShow.style.color = "red";
     }
 
     questionInv++;
