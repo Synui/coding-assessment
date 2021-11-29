@@ -70,13 +70,13 @@ var optionD = document.getElementById("btn3");
 var answerShow = document.getElementById("answerShow");
 
 var scores = document.getElementById("scores");
-var initialsInput = document.getElementById("intialsInput");
+var initialsInput = document.getElementById("initialsInput");
 var submitInitialsBtn = document.getElementById("submitInitialsBtn");
 
 var highScoreSection = document.getElementById("highScoreSection");
 var finalScore = document.getElementById("finalScore");
 
-var viewHighScores = document.getElementById("ViewHighScores");
+var viewHighScores = document.getElementById("viewHighScores");
 var listOfHighScores = document.getElementById("listOfHighScores");
 var goBackBtn = document.getElementById("goBackBtn");
 var clearHighScoresBtn = document.getElementById("clearHighScoresBtn");
@@ -100,18 +100,19 @@ var totalTime = 181;
 function startAssessment() {
     questionInv = 0;
     totalTime = 180;
-    timeRemains.textContent = totalTime
+    timeRemains.textContent = totalTime;
+    initialsInput.textContent = "";
 
     questionsTemplate.style.display = "block";
     begin.style.display = "none";
-    
+    timer.style.display = "block";
 
     var startTimer = setInterval(function() {
         totalTime--;
         timeRemains.textContent = totalTime;
-        if(totalTime <= 0) {
+        if (totalTime <= 0) {
             clearInterval(startTimer);
-            if (questionInv < questions.length -1) {
+            if (questionInv < questions.length - 1) {
                 gameOver();
             }
         }
@@ -119,6 +120,7 @@ function startAssessment() {
 
     showAssessment();
 };
+
 
 //questions and options
 function showAssessment() {
@@ -156,7 +158,7 @@ function answerVerify(answer) {
         nextQuestion();
     } else {
         //if no more questions, game over
-    gameOver();
+        gameOver();
     }
 };
 
@@ -170,21 +172,21 @@ function pickD() { answerVerify(3); };
 
 //if timers reaches 0, game over
 function gameOver() {
-    // finalScore.style.display = "block";
+    finalScore.style.display = "block";
     questionsTemplate.style.display = "none";
-    assessment.style.display = "none";
     timer.style.display = "none";
     timesUp.style.display = "block";
+    scores.style.display = "block";
+    answerShow.style.display = "none";
 
     //show final results
     finalScore.textContent = correctAns;
-    console.log(finalScore);
 };
 
 //input initials while storing score in localStorage
-function saveHighScores(event) {
-    event.preventDefault();
+function saveHighScores() {
 
+    scores.style.display = "block";
     //stops function if initials is left black
     if (initialsInput.value === "") {
         alert("Please enter your initials!");
@@ -194,7 +196,7 @@ function saveHighScores(event) {
     begin.style.display = "none";
     timer.style.display = "none";
     timesUp.style.display = "none";
-    scores.style.display = "block";
+    scores.style.display = "none";
     highScoreSection.style.display = "block";
 
     //stores scores in localStorage
@@ -223,7 +225,7 @@ function saveHighScores(event) {
 };
 
 //shows high scores
-// var i = 0
+var i = 0
 function displayHighScores() {
     begin.style.display = "none";
     timer.style.display = "none";
@@ -255,8 +257,9 @@ optionB.addEventListener("click", pickB);
 optionC.addEventListener("click", pickC);
 optionD.addEventListener("click", pickD);
 
-submitInitialsBtn.addEventListener("click", function(event) {
-    saveHighScores(event);
+submitInitialsBtn.addEventListener("click", function() {
+    scores.style.display = "none";
+    saveHighScores();
 });
 
 viewHighScores.addEventListener("click", function(event) {
@@ -264,12 +267,13 @@ viewHighScores.addEventListener("click", function(event) {
 });
 
 goBackBtn.addEventListener("click", function() {
-    begin.style.display = "block"
+    begin.style.display = "block";
+    scores.style.display = "none";
     highScoreSection.style.display = "none";
 });
 
 clearHighScoresBtn.addEventListener("click", function() {
     window.localStorage.removeItem("high scores");
-    listOfHighScores.innerHTML = "High Scores Cleared!";
+    listOfHighScores.innerHTML = "";
     // listOfHighScores.setAttribute("style", "font-family: 'Helvetica', sans-serif; font-style: italic;")
 });
